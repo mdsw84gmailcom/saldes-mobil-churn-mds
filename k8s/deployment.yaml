@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: saldes
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: saldes
+  template:
+    metadata:
+      labels:
+        app: saldes
+    spec:
+      imagePullSecrets:
+        - name: ghcr-secret
+      containers:
+        - name: api
+          image: ghcr.io/mdsw84gmailcom/saldes-mobil-churn-mds:7c9afeb63d0a06dfd5e45137851781f2641f47ff
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 384Mi
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
