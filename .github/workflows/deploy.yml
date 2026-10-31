@@ -19,6 +19,10 @@ jobs:
               env: 
                 KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
               run: |
+                if [[ -z "${KUBE_CONFIG:-}" ]]; then
+                  echo "::error::KUBE_CONFIG saknas"
+                  exit 1
+                fi
                 umask 077
                 printf '%s' "$KUBE_CONFIG" > "$RUNNER_TEMP/kubeconfig"
                 echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"

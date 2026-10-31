@@ -165,6 +165,7 @@ jobs:
     needs: docker
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     uses: ./.github/workflows/deploy.yml
+    secrets: inherit
     permissions:
       contents: read
 
