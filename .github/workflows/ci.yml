@@ -9,6 +9,7 @@ on:
       - "pyproject.toml"
       - ".github/workflows/**"
       - "kontroller/**"
+      - "k8s/**"
 
   pull_request:
     branches: [main]
@@ -19,6 +20,7 @@ on:
       - "pyproject.toml"
       - ".github/workflows/**"
       - "kontroller/**"
+      - "k8s/**"
 
 
   workflow_dispatch:
