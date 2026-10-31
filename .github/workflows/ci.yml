@@ -108,10 +108,12 @@ jobs:
 
       - name: Visa mätvärden i Summary
         run: |
-          echo "## Modellens mätvärden" >> $GITHUB_STEP_SUMMARY
-          echo '```json' >> $GITHUB_STEP_SUMMARY
-          cat outputs/matvarden.json >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
+          {  
+            echo "## Modellens mätvärden"
+            echo '```json'
+            cat outputs/matvarden.json
+            echo '```' 
+          } >> "$GITHUB_STEP_SUMMARY"
 
 
   versionera_modell:
@@ -159,7 +161,12 @@ jobs:
       actions: read
       packages: write
     
-     
+  deploy:
+    needs: docker
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    uses: ./.github/workflows/deploy.yml
+    permissions:
+      contents: read
 
   ringlista:
     needs: versionera_modell 

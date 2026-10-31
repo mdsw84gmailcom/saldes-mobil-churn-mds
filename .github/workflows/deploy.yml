@@ -1,0 +1,36 @@
+name: Deploy to Kubernetes
+
+
+on:
+    workflow_call:
+
+jobs:
+    deploy:
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        runs-on: ubuntu-24.04
+        environment: production
+        permissions:
+            contents: read
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Configure Kubernetes access
+              env: 
+                KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+              run: |
+                umask 077
+                printf '%s' "$KUBE_CONFIG" > "$RUNNER_TEMP/kubeconfig"
+                echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
+
+            - name: Set image version
+              env:
+                IMAGE: ghcr.io/${{ github.repository }}:${{ github.sha }}
+              run: |
+                sed -i "s|image: ghcr.io/.*|image: $IMAGE|" k8s/deployment.yaml
+
+            - name: Deploy to Kubernetes
+              run: kubectl apply  -n marian-desilva -f k8s/
+
+            - name: Verify rollout
+              run: kubectl rollout status deployment/saldes -n marian-desilva --timeout=180s
