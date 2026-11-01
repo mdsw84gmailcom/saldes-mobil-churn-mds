@@ -58,14 +58,10 @@ jobs:
            registry: ghcr.io 
            username: "${{ github.actor }}"
            password: "${{ secrets.GITHUB_TOKEN }}" 
-<<<<<<< HEAD
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-=======
-      
->>>>>>> upstream/main
       - name: docker bulidx
         if: github.ref == 'refs/heads/main'
         uses: docker/setup-buildx-action@v4
